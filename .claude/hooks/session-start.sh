@@ -11,6 +11,13 @@ if ! command -v uv >/dev/null 2>&1; then
   exit 0
 fi
 
+# Cloud only: the hf CLI (a Mac already has it from brew). It authenticates from the
+# HF_TOKEN set in the cloud environment's variables; gh needs nothing, the session's
+# GitHub proxy already authenticates `gh api` REST calls.
+if [ "${CLAUDE_CODE_REMOTE:-}" = "true" ]; then
+  uv tool install --quiet huggingface_hub
+fi
+
 # Root-level checks (index.yml, smoldataenvs.yml, multi-harness-rl.yml) plus ruff for lint,
 # in a repo-root venv that goes first on PATH for the session.
 uv venv --quiet --allow-existing --python 3.12 .venv
