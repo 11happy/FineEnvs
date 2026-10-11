@@ -14,7 +14,7 @@ fi
 # Root-level checks (index.yml, smoldataenvs.yml, multi-harness-rl.yml) plus ruff for lint,
 # in a repo-root venv that goes first on PATH for the session.
 uv venv --quiet --allow-existing --python 3.12 .venv
-uv pip install --quiet --python .venv pyyaml pytest==9.1.1 httpx ruff
+uv pip install --quiet --python .venv pyyaml pytest==9.1.1 httpx ruff==0.17.0
 if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
   echo "export PATH=\"$CLAUDE_PROJECT_DIR/.venv/bin:\$PATH\"" >> "$CLAUDE_ENV_FILE"
 fi

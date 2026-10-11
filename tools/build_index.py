@@ -114,7 +114,7 @@ def splice(path: Path, marker: str, body: str, *, check: bool) -> bool:
     """Replace the delimited block. Returns True if the file is (or would be) changed."""
     text = path.read_text(encoding="utf-8")
     pattern = re.compile(
-        rf"(<!-- BEGIN:{marker} -->\n).*?(\n<!-- END:{marker} -->)", re.S
+        rf"(<!-- BEGIN:{marker} -->\n).*?(\n<!-- END:{marker} -->)", re.DOTALL
     )
     if not pattern.search(text):
         print(f"  skip {path.relative_to(REPO_ROOT)} — no {marker} block")
