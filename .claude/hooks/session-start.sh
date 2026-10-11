@@ -1,22 +1,29 @@
 #!/bin/bash
-# Installs what CI needs so tests and lint run in Claude Code cloud sessions.
-# Mirrors .github/workflows/*.yml. Idempotent: uv and pip skip what is already there.
+# Installs what CI needs so tests and lint run in Claude Code sessions, cloud or local.
+# Mirrors .github/workflows/*.yml. Idempotent: uv skips what is already installed,
+# and downloads Python 3.11/3.12 if the machine lacks them.
 set -euo pipefail
-
-if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
-  exit 0
-fi
 
 cd "$CLAUDE_PROJECT_DIR"
 
-# Root-level checks: index.yml, smoldataenvs.yml, multi-harness-rl.yml, plus ruff for lint.
-python3 -m pip install --quiet --break-system-packages \
-  pyyaml pytest==9.1.1 httpx ruff
+if ! command -v uv >/dev/null 2>&1; then
+  echo "session-start: uv not found, skipping setup (install: https://docs.astral.sh/uv/)" >&2
+  exit 0
+fi
 
-# 01 LaTeX OCR (latex-ocr.yml): env project + dashboard requirements.
+# Root-level checks (index.yml, smoldataenvs.yml, multi-harness-rl.yml) plus ruff for lint,
+# in a repo-root venv that goes first on PATH for the session.
+uv venv --quiet --allow-existing --python 3.12 .venv
+uv pip install --quiet --python .venv pyyaml pytest==9.1.1 httpx ruff
+if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+  echo "export PATH=\"$CLAUDE_PROJECT_DIR/.venv/bin:\$PATH\"" >> "$CLAUDE_ENV_FILE"
+fi
+
+# 01 LaTeX OCR (latex-ocr.yml): env project, then warm the cache for the dashboard tests,
+# which CI runs in an ephemeral env.
 uv sync --quiet --frozen --python 3.11 --extra dev --project 01-latex-ocr/envs/latex_ocr
-# Dashboard deps run in an ephemeral env (as in CI); this just warms the uv cache.
-uv run --quiet --with-requirements 01-latex-ocr/dashboard/requirements.txt --with pytest \
+uv run --quiet --no-project --python 3.11 \
+  --with-requirements 01-latex-ocr/dashboard/requirements.txt --with pytest \
   python -c "import trackio"
 
 # 00 Wordle (wordle.yml): six framework flavors, each with its own venv.
