@@ -25,3 +25,8 @@ envs:
         transport: http-mcp
         space: FineEnvs/PortSimEnv
         verified: true
+      agentenv:
+        transport: http-mcp
+        verified: true
+        authors:
+          - {name: Edgar Arakelyan, github: earakely-scale, affiliation: Scale AI}
