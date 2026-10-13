@@ -45,8 +45,9 @@ flowchart LR
 - **Training uses physical locality.** A seeded block order visits every selected task once per
   epoch, shuffling bounded metadata chunks within each block. Prefetch overlaps upcoming reads;
   GRPO owns repetition of each task ID. This is a natural-proportion full pass. Evaluation uses
-  a frozen, block-local 500-task set: 100 per family, 22-23 per language, every task load-checked
-  and pinned. See [REPRODUCE.md](REPRODUCE.md#8-fixed-evaluation-set).
+  frozen sets of 50 tasks per language, 10 per family, every task load-checked and pinned:
+  1,100 per split over all 22 languages, 1,050 over the 21 shared with the ASR half, and 200
+  Kannada section crops for validation. See [REPRODUCE.md](REPRODUCE.md#8-fixed-evaluation-set).
 - **Caches have explicit budgets.** Defaults: 6 GB index files (the published 22-language
   set is 4.30 GB), 4 GB row groups, 512 MB rendered tasks; at most two concurrent cold group loads and four pending prefetches. Reader leases
   protect active files from eviction. Concurrent requests share loads and renders. An evicted

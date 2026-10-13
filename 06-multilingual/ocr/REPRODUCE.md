@@ -279,7 +279,8 @@ experimental outputs personal until a final result is ready for the organization
 ### Verified single-GPU smoke
 
 Both Gemma 4 sizes were run end to end on one A100, colocated with the corpus mounted
-read only, evaluating the frozen set. Summaries are committed under `results/`.
+read only. Summaries are committed under `results/`. They evaluated the retired 500-task set;
+the command below uses its replacement.
 
 ```bash
 REV=$(git rev-parse HEAD)          # must be pushed: the job fetches this exact commit
@@ -287,7 +288,7 @@ uv run --frozen --project envs/nayana_ocr hf jobs uv run \
   --flavor a100-large --timeout 2h --secrets HF_TOKEN \
   --volume hf://buckets/FineEnvs/NayanaOCR_Corpus_2025_bucket:/corpus:ro \
   train/hf_job.py --revision "$REV" --mode train \
-  --corpus-manifest repo --source-root /corpus --evalset eval-500.json \
+  --corpus-manifest repo --source-root /corpus --evalset eval-nayana-all-validation.json \
   --task-input corpus --smoke --model google/gemma-4-E2B-it \
   --languages en hi --families layout_detection page_ocr section_ocr \
   --num-generations 4 --max-steps 4 --eval-limit 10
@@ -455,10 +456,12 @@ for a bounded offline window. Use the indexed bucket path for complete-corpus se
 
 ## 8. Fixed evaluation set
 
-Training needs one evaluation set that does not move between runs. `nayana-evalset`
-freezes 500 test-split tasks: exactly 100 per task family, and 22 or 23 per language
-across all 22 languages, so per-family means carry equal sample sizes and no language is
-systematically short.
+Training needs evaluation sets that do not move between runs. `nayana-evalset` freezes
+them from one split at a time: `data/eval-nayana-all-{test,validation}.json` hold 1,100 tasks
+each, 50 per language across all 22 languages and 10 per family within each language, so
+per-family means carry equal sample sizes and no language is short. The `asr-overlap` pair
+holds the same 50 per language for the 21 languages shared with the ASR half, and
+`eval-nayana-kn-section-validation.json` holds 200 Kannada section crops for training runs.
 
 Selection balances **document diversity against cold read cost**, and diversity wins.
 A source block is ~100 consecutive pages and in practice a single document. Filling a
@@ -472,12 +475,12 @@ Candidate blocks are walked in **hash order, not density order**. Taking one tas
 family means a block only has to contain the families still needed, so its density buys
 nothing -- and preferring dense blocks actively hurts, because the corpus is parallel
 translations of the same sources: the densest blocks are the same documents in every
-language, so all 22 languages converge on them. Measured over the 500-task set, density
-order covered **28** unique documents and hash order covered **181**, while reading *less*
-data (9.06 GB against 10.92 GB).
+language, so all 22 languages converge on them. Measured on an earlier 500-task set,
+density order covered **28** unique documents and hash order covered **181**, while reading
+*less* data (9.06 GB against 10.92 GB).
 
-Measured for the default 500-task set: **116 distinct source blocks, ~9.1 GB of cold image
-reads, 181 unique source documents, 5-15 documents per language.** A cold block costs ~31 s
+Measured for the 1,100-task sets: **334 and 342 distinct source blocks, about 26 GB of cold
+image reads, and 314 and 321 unique source documents** (test and validation). A cold block costs ~31 s
 over HTTP range; the tasks drawn from it are then served from cache in well under a second
 each. A mounted bucket is far cheaper per cold block (~4.4 s measured on the Space), so
 prefer a mount when building or evaluating at scale.

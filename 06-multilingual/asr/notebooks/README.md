@@ -1,6 +1,6 @@
 # Notebook
 
-[`07_multilingual_asr.ipynb`](./07_multilingual_asr.ipynb) runs on a CPU against the hosted Space. It
+[`06_multilingual_asr.ipynb`](./06_multilingual_asr.ipynb) runs on a CPU against the hosted Space. It
 plays a held-out Kannada clip, scores an answer, and shows what Gemma 4 wrote for that clip before and
 after training, scored live. It then plots the whole run from the published results. Two optional
 cells run the trained adapter on a GPU and start a short training run.
