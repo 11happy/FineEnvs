@@ -10,7 +10,9 @@
 Both Gemma 4 sizes scored on all 500 tasks of `eval-500.json` — 22 languages, of which
 **11 are Indic and carry exactly half the set (250 tasks)** — across all five families.
 Every model saw the identical prompt from the environment and was graded by it, sampled
-greedily through vLLM so a re-run reproduces the score. No task failed.
+greedily through vLLM so a re-run reproduces the score. No task failed. `leaderboard.json` holds
+the summary. Every prediction, one file per model, is in the runs dataset under
+[`model-selection/ocr-eval-500/`](https://huggingface.co/datasets/FineEnvs/multilingual-multimodal-rl-runs/tree/main/model-selection/ocr-eval-500).
 
 | | E2B | E4B |
 |---|---|---|

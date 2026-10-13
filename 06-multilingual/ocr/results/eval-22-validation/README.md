@@ -3,6 +3,8 @@
 Both Gemma 4 sizes on all 1,100 tasks of `eval_22_validation` — **50 tasks per language**
 across 22 languages and five families, half of it Indic script (11 languages, 550 tasks).
 Identical prompt from the environment, graded by it, greedy through vLLM. No task failed.
+`leaderboard.json` holds the summary. Every prediction, one file per model, is in the runs dataset
+under [`model-selection/ocr-eval-22-validation/`](https://huggingface.co/datasets/FineEnvs/multilingual-multimodal-rl-runs/tree/main/model-selection/ocr-eval-22-validation).
 
 The **validation** variant is scored so `eval_22_test` stays untouched for a post-training
 number. `eval_21` nests inside this set, so its score falls out of the same run.

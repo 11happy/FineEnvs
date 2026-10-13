@@ -6,7 +6,8 @@ The **validation** variant is used deliberately: `eval_21_test` stays untouched 
 post-training number still means something.
 
 Every model saw the identical prompt from the environment and was graded by it, greedily
-sampled through vLLM. Per-model files hold every prediction; `leaderboard.json` the summary.
+sampled through vLLM. `leaderboard.json` holds the summary. Every prediction, one file per model,
+is in the runs dataset under [`model-selection/asr-eval-21-validation/`](https://huggingface.co/datasets/FineEnvs/multilingual-multimodal-rl-runs/tree/main/model-selection/asr-eval-21-validation).
 
 | Model | Macro | `transcription` | `verbatim` | `language_id` |
 |---|---|---|---|---|
