@@ -25,7 +25,7 @@ reference, usually a proven optimum. There's no LLM judge.
 
 The code lives here or in the author's own repo. Either way, every entry credits its authors and ships an eval card
 in the same format, so environments can be compared and shown side by side, as in
-[the article](https://fineenvs-simulation-rl-environments.hf.space/#what-the-community-built).
+[the article](https://fineenvs-simulation-rl-environments.hf.space/#the-live-port-portsimenv-v2v5).
 
 ## The catalog
 

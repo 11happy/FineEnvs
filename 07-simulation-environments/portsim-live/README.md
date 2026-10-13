@@ -11,6 +11,7 @@ short, the wind is the wind that blew, and the shipping lines answer back.</p>
 
 <a href="https://huggingface.co/spaces/earakely-scale/PortSimEnv-AgentEnv"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Space-Replays%20in%203D-FFD21E?style=for-the-badge&labelColor=1a1a1a" alt="Replays in 3D" height="32"></a>
 <a href="https://huggingface.co/datasets/earakely-scale/PortSimEnv-AgentEnv"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Tasks%20%26%20runs-4F46E5?style=for-the-badge&labelColor=1a1a1a" alt="Dataset" height="32"></a>
+<a href="https://fineenvs-simulation-rl-environments.hf.space/#the-live-port-portsimenv-v2v5"><img src="https://img.shields.io/badge/%F0%9F%93%84%20Article-The%20live%20port-10B981?style=for-the-badge&labelColor=1a1a1a" alt="The live port, in the Simulation RL Environments article" height="32"></a>
 <a href="https://github.com/scaleapi/agentenv-framework"><img src="https://img.shields.io/badge/framework-AgentEnv-3B82F6?style=for-the-badge&labelColor=1a1a1a" alt="AgentEnv" height="32"></a>
 <a href="https://github.com/earakely-scale/agentenv-portsim-plugin"><img src="https://img.shields.io/badge/GitHub-agentenv--portsim%20plugin-181717?style=for-the-badge&logo=github&labelColor=1a1a1a" alt="The agentenv-portsim plugin on GitHub" height="32"></a>
 

@@ -158,7 +158,8 @@ the same format.
   news and freezes (v2), pilots and tugs (v3), real wind and forecasts (v4), and shipping lines that
   answer back (v5). Over 60 weeks Claude Opus 5.5 and GPT-6 Astra lead at 0.857 and 0.851, and
   Qwen3.8-27B finds a valid plan in 1 of 60. Every run replays in the
-  [Space](https://huggingface.co/spaces/earakely-scale/PortSimEnv-AgentEnv).
+  [Space](https://huggingface.co/spaces/earakely-scale/PortSimEnv-AgentEnv), and
+  [the article's chapter](https://fineenvs-simulation-rl-environments.hf.space/#the-live-port-portsimenv-v2v5) walks through each version.
 
 Everything is in the [Simulation RL Envs collection](https://huggingface.co/collections/FineEnvs/simulation-rl-envs-6ac4eca150bd4b91790e2540),
 and [the article](https://huggingface.co/spaces/FineEnvs/simulation-rl-environments) covers all of it.
