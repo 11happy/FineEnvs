@@ -50,6 +50,7 @@ results and README, plus the Hub repos it owns. They read in order but stand alo
 | **03** | **[GeoGuesser](./03-geoguesser/)** | Drop a VLM at a random street corner on Earth and score it on kilometres of error. | 1 | 1 | 1 | ✅ stable |
 | **04** | **[SmolDataEnvs](./04-smoldataenvs/)** | Data-analysis tasks, verified SFT traces and a single-turn GRPO tutorial on HF Jobs. | 1 | 1 | 0 | 🚧 wip |
 | **05** | **[SmolDataEnvs: multi-harness RL](./05-multi-harness-rl/)** | Train on SmolDataEnvs with SETA, native OpenCode or Harbor, using HF Jobs or Slurm. | 3 | 1 | 0 | 🚧 wip |
+| **06** | **[Multilingual](./06-multilingual/)** | Document OCR over a million pages in 22 languages and speech recognition over 102, each behind one OpenEnv server, and Gemma 4 trained to read and hear Kannada. | 2 | 1 | 2 | ✅ trained |
 | **07** | **[PortSimEnv v1](./07-simulation-environments/portsim-v1/)**<br><sub>by [Adithya S Kolavi](https://github.com/adithya-s-k) (Hugging Face)</sub><br><sub>`agentenv` port by [Edgar Arakelyan](https://github.com/earakely-scale) (Scale AI)</sub> | Re-plan a broken week of container-ship dockings at the Port of Barcelona, graded against a proven optimum. | 1 | 2 | 1 | 🚧 wip |
 | **07** | **[PortSimEnv v2–v5: live, marine, wind and lines](./07-simulation-environments/portsim-live/)**<br><sub>by [Edgar Arakelyan](https://github.com/earakely-scale) (Scale AI)</sub> | Run a Port of Barcelona quay through a week as it unfolds, with live news, pilots and tugs, real wind and shipping lines that answer back. | 1 | 1 | 0 | 🚧 wip |
 <!-- END:projects -->
@@ -139,6 +140,19 @@ evaluation in every harness. [The article](https://huggingface.co/spaces/FineEnv
 walks through the experiments, and the
 [collection](https://huggingface.co/collections/FineEnvs/smoldataenvs-multi-harness-rl-6abdfaaa8d74dacd481d5212)
 holds the Spaces, datasets and trained models.
+
+### [06 · Multilingual](./06-multilingual/) &nbsp;<sub>reading and hearing many languages, two servers</sub>
+
+**Two corpora as environments.** [`ocr/`](./06-multilingual/ocr/) serves a million scanned pages in
+22 languages from a bucket as 11 million tasks, with Sarvam Indic OCR Bench beside them as evaluation
+splits. [`asr/`](./06-multilingual/asr/) serves all of FLEURS, 102 languages of read speech. Both play
+in the browser.
+
+Gemma 4 E4B was trained on Kannada in each. Reading, it makes 16% fewer character errors on the
+benchmark's Kannada slice, mostly by learning to stay in the script. Hearing, it makes 45% fewer on
+clips it never saw, but only once the trainer actually fed it the audio: TRL drops audio from the
+forward pass its loss comes from, and the project shows the fix and the numbers. Part of the
+[Multilingual Multimodal Envs](https://huggingface.co/collections/FineEnvs/multilingual-multimodal-envs-6ac0c27c137f93e0799603e4) collection.
 
 ### [07 · Simulation environments](./07-simulation-environments/) &nbsp;<sub>a catalog of simulation environments and their evals</sub>
 
@@ -363,6 +377,7 @@ FineEnvs/
 ├── 03-geoguesser/           a multi-turn game as an environment
 ├── 04-smoldataenvs/         5.5K+ verified data-analysis tasks
 ├── 05-multi-harness-rl/     the same tasks trained through TRL, OpenCode and Harbor
+├── 06-multilingual/         OCR over 22 languages and ASR over 102, two OpenEnv servers
 ├── 07-simulation-environments/  a catalog of simulation environments: PortSimEnv v1–v5 and more
 ├── content/
 │   ├── articles/            long-form sources (Astro → Docker Space)
