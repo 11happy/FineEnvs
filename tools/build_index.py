@@ -42,12 +42,44 @@ VERIFIED_ICON = {
 
 
 def load_projects() -> list[dict]:
+    # A project keeps its manifest at its root, or one level down when it ships in
+    # parts (07-simulation-environments/portsim-v1/project.yaml).
     projects = []
-    for manifest in sorted(REPO_ROOT.glob("[0-9][0-9]-*/project.yaml")):
-        data = yaml.safe_load(manifest.read_text(encoding="utf-8"))
-        data["_dir"] = manifest.parent
-        projects.append(data)
+    for pattern in ("[0-9][0-9]-*/project.yaml", "[0-9][0-9]-*/*/project.yaml"):
+        for manifest in sorted(REPO_ROOT.glob(pattern)):
+            data = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+            data["_dir"] = manifest.parent
+            projects.append(data)
     return sorted(projects, key=lambda p: p.get("order", 99))
+
+
+def unregistered(projects: list[dict]) -> list[str]:
+    """Numbered folders with no manifest, which the root table would silently skip."""
+    registered = {p["_dir"].relative_to(REPO_ROOT).parts[0] for p in projects}
+    return sorted(
+        d.name for d in REPO_ROOT.glob("[0-9][0-9]-*") if d.is_dir() and d.name not in registered
+    )
+
+
+def render_people(authors: list[dict]) -> str:
+    """`authors:` entries ({name, github, affiliation}) as "Name (Affiliation)", linked to GitHub."""
+    people = []
+    for a in authors:
+        name = f"[{a['name']}](https://github.com/{a['github']})" if a.get("github") else a["name"]
+        people.append(f"{name} ({a['affiliation']})" if a.get("affiliation") else name)
+    return ", ".join(people)
+
+
+def render_credits(project: dict) -> str:
+    """Credit lines under a project's title: its authors, then the authors of any framework port."""
+    lines = []
+    if project.get("authors"):
+        lines.append(f"by {render_people(project['authors'])}")
+    for env in project.get("envs") or []:
+        for fw, spec in (env.get("frameworks") or {}).items():
+            if spec.get("authors"):
+                lines.append(f"`{fw}` port by {render_people(spec['authors'])}")
+    return "".join(f"<br><sub>{line}</sub>" for line in lines)
 
 
 def render_projects_table(projects: list[dict]) -> str:
@@ -56,7 +88,7 @@ def render_projects_table(projects: list[dict]) -> str:
         "|---|---|---|:--:|:--:|:--:|---|",
     ]
     for p in projects:
-        folder = p["_dir"].name
+        folder = p["_dir"].relative_to(REPO_ROOT).as_posix()
         num = folder.split("-", 1)[0]
         envs = p.get("envs") or []
         frameworks = {f for e in envs for f in (e.get("frameworks") or {})}
@@ -68,7 +100,7 @@ def render_projects_table(projects: list[dict]) -> str:
         }
         status = STATUS_ICON.get(p.get("status", ""), p.get("status", ""))
         rows.append(
-            f"| **{num}** | **[{p['title']}](./{folder}/)** | {p['tagline']} "
+            f"| **{num}** | **[{p['title']}](./{folder}/)**{render_credits(p)} | {p['tagline']} "
             f"| {len(envs)} | {len(frameworks)} | {len(spaces)} | {status} |"
         )
     return "\n".join(rows)
@@ -123,7 +155,7 @@ def main() -> None:
     args = ap.parse_args()
 
     projects = load_projects()
-    print(f"{len(projects)} project(s): " + ", ".join(p["_dir"].name for p in projects))
+    print(f"{len(projects)} project(s): " + ", ".join(p["_dir"].relative_to(REPO_ROOT).as_posix() for p in projects))
 
     changed = splice(REPO_ROOT / "README.md", "projects", render_projects_table(projects), check=args.check)
     for p in projects:
@@ -131,6 +163,9 @@ def main() -> None:
         if matrix:
             changed |= splice(p["_dir"] / "README.md", "matrix", matrix, check=args.check)
 
+    missing = unregistered(projects)
+    if missing:
+        sys.exit(f"error: no project.yaml in {', '.join(missing)} — add one so the root README lists it")
     if args.check and changed:
         sys.exit("error: generated blocks are out of date — run tools/build_index.py")
     print("✓ up to date" if not changed else "✓ regenerated")

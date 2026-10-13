@@ -1,0 +1,34 @@
+# Project manifest. `tools/build_index.py` renders the root README table from it.
+name: berth-planning
+title: "PortSimEnv v1"
+tagline: "Re-plan a broken week of container-ship dockings at the Port of Barcelona, graded against a proven optimum."
+order: 7
+status: wip
+authors:
+  - {name: Adithya S Kolavi, github: adithya-s-k, affiliation: Hugging Face}
+
+hub:
+  org: FineEnvs
+  collection: FineEnvs/simulation-rl-envs
+  spaces:
+    - FineEnvs/PortSimEnv
+    - FineEnvs/PortSimEnv-Eval
+    - FineEnvs/simulation-rl-environments
+  datasets:
+    - FineEnvs/PortSimEnv
+
+envs:
+  - name: berth_planning
+    summary: "Multi-turn dock planning on real 2024 Port of Barcelona calls (dock-v1: 1,050 train / 50 eval): situation, budgeted plan checks, one graded submit."
+    backend: python-offline
+    tools: 3   # get_situation check_plan submit_plan
+    frameworks:
+      openenv:
+        transport: http-mcp
+        space: FineEnvs/PortSimEnv
+        verified: true
+      agentenv:
+        transport: http-mcp
+        verified: true
+        authors:
+          - {name: Edgar Arakelyan, github: earakely-scale, affiliation: Scale AI}
