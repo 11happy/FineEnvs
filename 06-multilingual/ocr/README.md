@@ -27,15 +27,16 @@ a benchmark it never trained on. 500 steps, one A100, 10.5 hours.
 
 | Sarvam Indic OCR Bench, Kannada, 300 crops | base | trained | change, 95% CI |
 |---|---:|---:|---:|
-| **character error rate** | 0.4277 | **0.3601** | −0.068 (−0.083, −0.052) |
-| word error rate | 0.773 | 0.748 | −0.025 (−0.037, −0.014) |
-| word accuracy | 22.7% | 25.2% | |
-| outputs that loop or collapse | 16 | 10 | |
-| outputs that slip into another script | 12.3% | 5.0% | |
+| **character error rate** | 0.4277 | **0.3602** | −0.068 (−0.083, −0.052) |
+| word error rate | 0.773 | 0.747 | −0.026 (−0.038, −0.014) |
+| word accuracy | 22.7% | 25.3% | |
+| outputs that loop or collapse | 16 | 6 | |
+| outputs that slip into another script | 12.3% | 4.7% | |
 
 The error rates are the benchmark's own, from Sarvam's `metrics.py`, run unmodified, so they can be
 compared with Sarvam's published numbers. Each change is paired crop by crop against the untuned
-model, on the same vLLM engine. 223 crops get better and 62 get worse.
+model, on the same vLLM engine. 226 crops get better and 59 get worse. The trained model is the
+final checkpoint, step 500, so choosing it never looked at the benchmark.
 
 The gain is real but modest, and it stops early: the curve is flat from step 300. [What it
 learned](#what-it-learned) says why.
@@ -64,7 +65,7 @@ It learned to stay in the script.
 
 The untuned model reads Kannada reasonably well, but one crop in eight comes back with letters
 from another Indic script in the middle. Training cuts that to one in twenty, and outputs that loop or
-fall apart drop from 16 to 10. A crop at the 25th percentile of improvement:
+fall apart drop from 16 to 6. A crop from the top quarter of improvements:
 
 <img src="./assets/example-crop.jpg" alt="Kannada text crop from Sarvam Indic OCR Bench" width="60%">
 
@@ -72,7 +73,7 @@ fall apart drop from 16 to 10. A crop at the 25th percentile of improvement:
 |---|---|---:|
 | reference | ಬಯ್ತ - ಅಡಗಿಸಿಟ್ಟ (ದಿವಿಜತತಿ ಬಯ್ತು ಕೈದುವಂ ಅವಸರದೊಳ್ / ಬೇಡೆ ಸುರಭಿಯ ನಕ್ಕಿಸೆ .. .. ಕಯ್ದುವಾದುವಾ / ಗೊರವನೆಲ್ವು: ಸಮಯಪ, ೧೦. ೧೪೨) | |
 | before | ಬತ್ತು - ಅಡಗಿಸಿಟ್ಟಿ (ದವಿಚತೇ **वायु** ಕೃಡಮ ಅವಕಾಶದೊಳ / ಬೇದ ಸುರಭೆಯ ನಕ್ಷೆ ... ... ಕಮ್ಯುದದಾ / ಗೌರವ**nel**: ಸಮುಮ, ೧೦.೧೭) | 0.455 |
-| after | ಬತ್ತು - ಅಡಗಿಸಿಟಿ (ದಿವಸತೇ ಬತ್ತು ಕಡಮಂ ಅವಕಾಶದೊಳ / ಬೇಡ ಸುರಭಿಯ ನಕ್ಷೆ ... ... ಕಮ್ಯುವಾದುಹಾ / ಗಾರ್ದನಲ್ಯ: ಸಮಯವ, ೧೦.೧೭) | 0.347 |
+| after | ಬತ್ತು - ಅಡಗಿಸಿಟಿ (ದಿವಸತೇ ಬತ್ತು ಕಡಮಂ ಅವಕಾಶದೊಳ / ಬೇಡ ಸುರಭಿಯ ನಕ್ಷೆ ... ... ಕಮ್ಯುದಾದುಹಾ / ಗಾರ್ಡನೆಲು: ಸಮಯವ, ೧೦.೧೭) | 0.347 |
 
 What it did not learn is to read the letters it gets wrong. Word error barely moves, and no crop
 is transcribed exactly, before or after. The remaining mistakes are a letter or two inside most

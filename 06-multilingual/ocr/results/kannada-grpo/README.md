@@ -8,9 +8,11 @@ and the benchmark's own scoring script.
 
 ![Training reward and held-out curves](./curves.png)
 
-The published adapter is **step 300**:
+The published adapter is the final checkpoint, **step 500**:
 [FineEnvs/gemma-4-E4B-it-kannada-ocr-grpo](https://huggingface.co/FineEnvs/gemma-4-E4B-it-kannada-ocr-grpo).
-It has the lowest Sarvam CER of all 20 checkpoints, and the final step 500 is level with it (0.3602).
+It was first published at step 300, which has the lowest Sarvam CER of the 20 checkpoints. That
+choice was made on the benchmark the result is reported on, so the final step replaced it. The two
+are level (0.3602 against 0.3601), and step 300 stays available as revision `step-300` of the model.
 
 ## Every checkpoint
 
@@ -33,7 +35,7 @@ environment's own character error, capped the same way here. Every crop's predic
 | 225 | 0.3638 | 0.7473 | 0.3635 | 0.5092 | -0.0638 (-0.0792, -0.0485) |
 | 250 | 0.3651 | 0.7499 | 0.3648 | 0.5081 | -0.0626 (-0.0781, -0.0471) |
 | 275 | 0.3653 | 0.7538 | 0.3629 | 0.5097 | -0.0623 (-0.0784, -0.0463) |
-| **300** | 0.3601 | 0.7475 | 0.3586 | 0.5131 | -0.0676 (-0.0830, -0.0521) |
+| 300 | 0.3601 | 0.7475 | 0.3586 | 0.5131 | -0.0676 (-0.0830, -0.0521) |
 | 325 | 0.3605 | 0.7479 | 0.3587 | 0.5130 | -0.0672 (-0.0827, -0.0516) |
 | 350 | 0.3608 | 0.7488 | 0.3594 | 0.5125 | -0.0668 (-0.0824, -0.0513) |
 | 375 | 0.3610 | 0.7460 | 0.3600 | 0.5120 | -0.0667 (-0.0824, -0.0509) |
@@ -41,7 +43,7 @@ environment's own character error, capped the same way here. Every crop's predic
 | 425 | 0.3606 | 0.7459 | 0.3584 | 0.5133 | -0.0671 (-0.0828, -0.0513) |
 | 450 | 0.3605 | 0.7460 | 0.3588 | 0.5130 | -0.0671 (-0.0828, -0.0514) |
 | 475 | 0.3619 | 0.7474 | 0.3608 | 0.5114 | -0.0658 (-0.0816, -0.0500) |
-| 500 | 0.3602 | 0.7466 | 0.3592 | 0.5126 | -0.0675 (-0.0834, -0.0516) |
+| **500** | 0.3602 | 0.7466 | 0.3592 | 0.5126 | -0.0675 (-0.0834, -0.0516) |
 
 ![Held-out metrics by step](./eval_curve.png)
 ![Paired change from base, with 95% intervals](./eval_change.png)

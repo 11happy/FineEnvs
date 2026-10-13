@@ -91,7 +91,7 @@ class AudioGRPOTrainer(GRPOTrainer):
 # a second job, one vLLM engine, adapters hot-loaded as they land
 hf jobs uv run ... train/hf_job.py --mode eval-vllm \\
   --base google/gemma-4-E4B-it \\
-  --watch <you>/fineenvs-asr-runs/<commit> --follow-job <id> \\
+  --watch <you>/fineenvs-asr-runs/<commit>/asr-kn-full-v3 --follow-job <id> \\
   --eval-split eval_1_test --reward-unit cer \\
   --trackio-space <you>/fineenvs-asr-trackio
 
@@ -155,9 +155,9 @@ hf jobs uv run ... train/hf_job.py --mode eval-vllm \\
   -v hf://buckets/FineEnvs/indic-ocr-bench-bucket:/indic-ocr-bench:ro \\
   --split indic_ocr_bench_test --languages kn \\
   --base google/gemma-4-E4B-it \\
-  --watch <you>/fineenvs-ocr-runs/<commit> --follow-job <id>
+  --watch <you>/fineenvs-ocr-runs/<commit>/ocr-kn-v2 --follow-job <id>
 
-# step 300: Sarvam CER 0.428 -> 0.360 (-16%)"""),
+# step 500: Sarvam CER 0.428 -> 0.360 (-16%)"""),
 ]
 
 TITLE = {"asr": ("How the Kannada ASR run trains", "one GRPO step, end to end, and the code that runs it"),

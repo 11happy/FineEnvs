@@ -1,6 +1,7 @@
 {
   "model": "FineEnvs/gemma-4-E4B-it-kannada-ocr-grpo",
-  "selected_checkpoint": 300,
+  "selected_checkpoint": 500,
+  "selection": "final checkpoint; step 300 was published first and is kept as model revision step-300",
   "github": {
     "repo": "adithya-s-k/FineEnvs",
     "revision": "6e8dd1825baa127d58ba828fc67c6eb0b52b2599",

@@ -38,9 +38,9 @@ A100, 10.5 hours.
 
 | Sarvam Indic OCR Bench, Kannada, 300 crops | base | trained | change, 95% CI |
 |---|---:|---:|---:|
-| **character error rate** | 0.4277 | **0.3601** | −0.068 (−0.083, −0.052) |
-| word error rate | 0.773 | 0.748 | −0.025 (−0.037, −0.014) |
-| outputs that slip into another script | 12.3% | 5.0% | |
+| **character error rate** | 0.4277 | **0.3602** | −0.068 (−0.083, −0.052) |
+| word error rate | 0.773 | 0.747 | −0.026 (−0.038, −0.014) |
+| outputs that slip into another script | 12.3% | 4.7% | |
 
 The error rates are Sarvam's own, from the benchmark's `metrics.py`. Most of the gain is the model
 learning to stay in the Kannada script, and the curve is flat from step 300. **[More in ocr/ →](./ocr/)**

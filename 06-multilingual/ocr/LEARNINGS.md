@@ -8,15 +8,15 @@ engine, and changes are paired crop by crop. Every crop's prediction is in
 ## The headline
 
 500 steps of GRPO on 4,000 Kannada crops from the Nayana corpus cut Sarvam CER from 0.4277 to
-0.3601: a paired change of −0.068, 95% CI (−0.083, −0.052). The benchmark is a different source
+0.3602 at the final step: a paired change of −0.068, 95% CI (−0.083, −0.052). The benchmark is a different source
 from the training data, so this measures transfer, not memory. Most of the gain is in the first 100
 steps, and nothing improves after step 300.
 
 ## 1. The first thing it fixed was the script
 
 The untuned model writes letters from another Indic script into Kannada text, and occasionally
-whole Latin fragments. That happens on 37 of 300 benchmark crops. After training, it happens on 15.
-Outputs that loop or collapse, by Sarvam's own detector, fall from 16 to 10.
+whole Latin fragments. That happens on 37 of 300 benchmark crops. After training, it happens on 14.
+Outputs that loop or collapse, by Sarvam's own detector, fall from 16 to 6.
 
 The [ASR half](../asr/) learned the same thing first. A reward that counts characters charges for a wrong
 script on every letter, so it is the first habit to go.
@@ -24,7 +24,7 @@ script on every letter, so it is the first habit to go.
 ## 2. Then it stopped
 
 After step 300 the held-out CER sits at 0.360 ± 0.001 for 200 more steps. Training reward had
-already levelled off at about 0.59 by step 150. Word error barely moved over the whole run (0.773 to 0.748), and no crop is
+already levelled off at about 0.59 by step 150. Word error barely moved over the whole run (0.773 to 0.747), and no crop is
 transcribed exactly, before or after.
 
 The remaining errors are a letter or two inside most words. A character reward pays for each one
