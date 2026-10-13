@@ -26,9 +26,9 @@ hf jobs uv run -d --flavor a100-large -s HF_TOKEN --timeout 16h \
   -v hf://buckets/FineEnvs/fleurs-bucket:/fleurs:ro \
   -v hf://buckets/<you>/fineenvs-asr-runs:/outputs \
   train/hf_job.py --revision <commit> --mode eval-vllm --source-root /fleurs --output-root /outputs \
-  --base google/gemma-4-E4B-it --watch <you>/fineenvs-asr-runs/<commit> --follow-job <train job id> \
+  --base google/gemma-4-E4B-it --watch <you>/fineenvs-asr-runs/<commit>/asr-kn-full-v3 --follow-job <train job id> \
   --eval-split eval_1_test --max-new-tokens 448 --reward-unit cer \
-  --output-dir /outputs/<commit>/evals \
+  --output-dir /outputs/<commit>/asr-kn-full-v3/evals \
   --trackio-space <you>/fineenvs-asr-trackio --run-name asr-kn-full-v3-eval
 ```
 
@@ -37,7 +37,8 @@ an adapter, about 80 seconds per checkpoint, so it sits idle most of the time. A
 more works. An L40S is cheaper, but none were free when this ran. If the scoring job dies, relaunch
 it with the same arguments: it picks up from its own `curve.json`.
 
-Its output, under `<commit>/evals/` in the bucket:
+A run writes under `<commit>/<run-name>/` in the bucket, so two runs from one commit never share a
+folder. The scoring job's output is under `<commit>/asr-kn-full-v3/evals/`:
 
 | | |
 |---|---|

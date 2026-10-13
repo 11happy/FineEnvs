@@ -23,6 +23,26 @@ SCRIPTS = {
 }
 
 
+def run_subdir(revision, extra):
+    """Where a run writes under --output-root: <revision>/<run-name>, or <revision>.
+
+    Keying on the revision alone let two runs from one commit overwrite each other's
+    checkpoints and run-metadata.json, so a --run-name (passed through to the script)
+    gets a folder of its own.
+    """
+    name = None
+    for index, arg in enumerate(extra):
+        if arg == "--run-name" and index + 1 < len(extra):
+            name = extra[index + 1]
+        elif arg.startswith("--run-name="):
+            name = arg.split("=", 1)[1]
+    if name is None:
+        return Path(revision)
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name):
+        raise SystemExit(f"--run-name {name!r} must be a single folder name")
+    return Path(revision) / name
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -62,11 +82,8 @@ def main():
         # Checkpoints belong on durable storage while they are being written, not in
         # the container. --artifact-repo uploads in a finally, which a timeout kill or an
         # OOM never reaches; a mounted bucket has the weights the moment they are saved.
-        run = (
-            Path(args.output_root) / args.revision
-            if args.output_root
-            else directory / "run"
-        )
+        subdir = run_subdir(args.revision, extra)
+        run = Path(args.output_root) / subdir if args.output_root else directory / "run"
         run.mkdir(parents=True, exist_ok=True)
         (run / "source.json").write_text(
             f'{{"repo":"{args.repo}","revision":"{args.revision}"}}\n'
@@ -121,7 +138,7 @@ def main():
                     repo_id=args.artifact_repo,
                     repo_type="dataset",
                     folder_path=run,
-                    path_in_repo=args.revision,
+                    path_in_repo=subdir.as_posix(),
                     commit_message=f"ASR {args.mode}: {args.revision}",
                 )
 

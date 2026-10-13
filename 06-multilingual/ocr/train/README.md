@@ -33,8 +33,8 @@ hf jobs uv run -d --flavor a100-large -s HF_TOKEN --timeout 16h \
   -v hf://buckets/<you>/fineenvs-ocr-runs:/outputs \
   train/hf_job.py --revision <commit> --mode eval-vllm --corpus-manifest repo --source-root /corpus \
   --output-root /outputs --split indic_ocr_bench_test --languages kn \
-  --base google/gemma-4-E4B-it --watch <you>/fineenvs-ocr-runs/<commit> --follow-job <train job id> \
-  --output-dir /outputs/<commit>/evals \
+  --base google/gemma-4-E4B-it --watch <you>/fineenvs-ocr-runs/<commit>/ocr-kn-v2 --follow-job <train job id> \
+  --output-dir /outputs/<commit>/ocr-kn-v2/evals \
   --trackio-space <you>/fineenvs-ocr-trackio --run-name ocr-kn-v2-eval
 ```
 
@@ -43,7 +43,8 @@ an adapter, so it sits idle most of the time. Any GPU with 24 GB or more works. 
 but none were free when this ran. If the scoring job dies, relaunch it with the same arguments: it
 picks up from its own `curve.json`.
 
-Its output, under `<commit>/evals/` in the bucket:
+A run writes under `<commit>/<run-name>/` in the bucket, so two runs from one commit never share a
+folder. The scoring job's output is under `<commit>/ocr-kn-v2/evals/`:
 
 | | |
 |---|---|
