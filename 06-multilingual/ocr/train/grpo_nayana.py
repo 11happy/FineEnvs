@@ -44,7 +44,7 @@ class Config:
     source_root: str = ""
     cache_dir: str = ""
     local_source: bool = False
-    model: str = "Qwen/Qwen3-VL-2B-Instruct"
+    model: str = "google/gemma-4-E4B-it"
     model_revision: str = ""
     languages: tuple[str, ...] = ("en", "kn", "hi", "ar")
     families: tuple[str, ...] = FAMILIES

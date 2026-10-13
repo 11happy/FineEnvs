@@ -48,7 +48,7 @@ class Config:
     eval_limit: int = 0
     save_steps: int = 25
     save_total_limit: int = 0
-    model: str = "google/gemma-4-E2B-it"
+    model: str = "google/gemma-4-E4B-it"
     model_revision: str = ""
     languages: tuple[str, ...] = ("en_us", "hi_in")
     families: tuple[str, ...] = ("transcription",)

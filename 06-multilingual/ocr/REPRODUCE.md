@@ -229,7 +229,7 @@ With LoRA, G=4, and 2,048 completion tokens, start E2B on a single 40 GB card an
 dense full-page `page_ocr`; expect the page transcription families to be resolution-limited
 and read per-family metrics before concluding anything about the recipe.
 
-Defaults: Qwen/Qwen3-VL-2B-Instruct, resolved model commit recorded; English/Kannada/Hindi/Arabic;
+Defaults: google/gemma-4-E4B-it, the model of the Kannada run, resolved model commit recorded; English/Kannada/Hindi/Arabic;
 all five families (descriptive VQA requires the judge); 30 steps; G=4; BF16/SDPA; LoRA rank16/alpha32/dropout.05 on q_proj/v_proj;
 learning rate1e-5; temperature.9; seed42; 2,048 completion tokens; processor max_pixels1,048,576.
 `--smoke` uses two steps, G=2, and one evaluation item per group. `--languages` can select any
