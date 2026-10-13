@@ -79,8 +79,8 @@ published schedule) played on the same tasks.
 | PortSimEnv v1 | 50 weeks, 4 tiers | the CP-SAT optimum | 0.20 | 6 | GPT-6.1 Sol 0.888 | [eval-v1.json](portsim-v1/results/eval-v1.json) |
 | PortSimEnv v2, live | 15 weeks | the hindsight optimum | 0.20 | 12 | GPT-6 Astra 0.984 | [eval-v2.json](portsim-live/results/eval-v2.json) |
 | PortSimEnv v3, marine | 15 weeks | the hindsight optimum | 0.19 | 12 | GPT-6 Astra 0.956 | [eval-v3.json](portsim-live/results/eval-v3.json) |
-| PortSimEnv v4, wind | 15 weeks | hindsight or the forecast-following re-planner, whichever is cheaper | 0.18 | 12 | Claude Opus 5.5 0.906 | [eval-v4.json](portsim-live/results/eval-v4.json) |
-| PortSimEnv v5, lines | 15 weeks | hindsight or the re-planner that asks the ships, whichever is cheaper | 0.18 | 12 | Claude Opus 5.5 0.593 | [eval-v5.json](portsim-live/results/eval-v5.json) |
+| PortSimEnv v4, wind | 15 weeks | the cheaper of hindsight and a forecast-following re-planner | 0.18 | 12 | Claude Opus 5.5 0.906 | [eval-v4.json](portsim-live/results/eval-v4.json) |
+| PortSimEnv v5, lines | 15 weeks | the cheaper of hindsight and a re-planner that asks the ships | 0.18 | 12 | Claude Opus 5.5 0.593 | [eval-v5.json](portsim-live/results/eval-v5.json) |
 | RailSimEnv | 45 hard tasks | the CP-SAT optimum | | 4 | Qwen3.8-2.4T-A95B 0.556 | reported by the author |
 
 The versions are not comparable with each other: each plays its own weeks with its own harness. Each card says how
