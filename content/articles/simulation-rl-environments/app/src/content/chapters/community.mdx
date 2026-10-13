@@ -2,51 +2,28 @@ import HtmlEmbed from "../../components/HtmlEmbed.astro";
 
 ## What the community built
 
-Within a week of part 1, two people had built on it. Both are now in the
+Within a week of part 1, two people had built on it. Edgar Arakelyan's live port is the previous chapter. Bhavish
+Pahwa took the same recipe to a different job. Both are in the
 [FineEnvs catalog](https://github.com/adithya-s-k/FineEnvs/tree/main/07-simulation-environments), credited by name,
 each with its own eval.
 
-### PortSimEnv v2–v5, by Edgar Arakelyan (Scale AI)
-
-Edgar moved PortSimEnv onto [AgentEnv](https://github.com/scaleapi/agentenv-framework) and made the week happen in
-order. The agent no longer sees the whole week at once. A virtual clock moves it through watches. News arrives 12 to
-24 hours ahead, the next six hours freeze, and the agent confirms berths as it goes. The week is graded once, at the
-end, against what really happened. Each version builds on the one before:
-
-- **v2, live:** news watch by watch, freezes and confirmations.
-- **v3, marine:** the port's 7 pilots and 8 tugs, shared hour by hour with all of its real 2024 traffic, plus
-  announced cuts.
-- **v4, wind:** real wind from the port's anemometer (2023 to 2025) and the ECMWF forecasts as they were issued. The
-  agent plans on the forecast and is graded on the wind that actually blew.
-- **v5, lines:** every ship's shipping agent is its own agent. ETAs are often wrong. The planner can ask a ship for
-  its ETA or agree an arrival hour, and ships berth first come, first served.
-
-Twelve models played 15 weeks of each version.
-
-<HtmlEmbed
-  src="d3-community-evals.html"
-  title="PortSimEnv v2–v5: twelve models, 15 weeks per version"
-  desc="Pick a version. Bars are mean reward with the 95% interval; vertical rules are the eval card's baselines. Open 'How this eval works' for how the weeks were picked and what 1.0 means."
-/>
-
-- **Each version is harder.** Eight of the twelve models score lower at each step from live to marine to wind, and
-  11 of 12 score lower on the lines weeks than on the same weeks without the ships' agents.
-- **On v5, talking to the ships is what scores.** A re-planner that agrees arrival times with the ships' agents
-  reaches 0.55. The same planner without asking reaches 0.24.
-- **Claude Opus 5.5 and GPT-6 Astra lead** over all 60 weeks, at 0.857 and 0.851. Qwen3.8-27B, the one model small
-  enough to fine-tune cheaply, finds a valid plan in 1 of 60.
-
-The code is in [`07-simulation-environments/portsim-live`](https://github.com/adithya-s-k/FineEnvs/tree/main/07-simulation-environments/portsim-live),
-every run is in the dataset [earakely-scale/PortSimEnv-AgentEnv](https://huggingface.co/datasets/earakely-scale/PortSimEnv-AgentEnv),
-and the [Space](https://huggingface.co/spaces/earakely-scale/PortSimEnv-AgentEnv) replays them on the same 3D quay.
-
 ### RailSimEnv, by Bhavish Pahwa
 
-Bhavish took the recipe to rail. In [RailSimEnv](https://huggingface.co/spaces/bpHigh/RailSimEnv) the agent
-dispatches Arriva's trains on the single-track Groningen–Leeuwarden line in the Netherlands after a real 2025
-breakdown, collision, or signal or points failure. It holds, short-turns and cancels trains so that opposing trains
-cross safely. Every plan is graded against a CP-SAT-proven optimum. It runs on OpenEnv with a 3D replay and is built
-from Rijden de Treinen's open train archive and OpenStreetMap.
+In [RailSimEnv](https://huggingface.co/spaces/bpHigh/RailSimEnv) the agent dispatches Arriva's trains on the
+single-track Groningen–Leeuwarden line in the Netherlands after a real 2025 breakdown, collision, or signal or points
+failure. On a single track, trains in opposite directions can only pass where the line doubles, so one closed section backs up
+the whole line. The
+agent holds, short-turns and cancels trains so they cross safely, and every plan is graded against a CP-SAT-proven
+optimum. It is built from Rijden de Treinen's open train archive and OpenStreetMap, and it runs on OpenEnv with a 3D
+replay.
+
+<HtmlEmbed
+  src="railsim-gallery.html"
+  wide
+  frameless
+  title="RailSimEnv: one closure on a single-track line"
+  desc="The proven-optimal plan for a broken-down train on 1 May 2025, in RailSimEnv's 3D replay and its train graph."
+/>
 
 On 45 hard eval tasks, as reported by the author:
 
@@ -64,5 +41,5 @@ An open model leads here. The one closed model keeps every plan legal but rarely
 
 The catalog takes environments whose code lives in FineEnvs and ones that stay in their authors' own repos. Every
 entry has a manifest that credits its authors, a short card, and an eval card in a shared format. That shared format
-is what lets this article show each environment's eval the same way, as in the chart above.
+is what lets this article draw each environment's eval the same way, like the PortSimEnv v2–v5 chart above.
 [Here is how to add one](https://github.com/adithya-s-k/FineEnvs/tree/main/07-simulation-environments#add-your-environment).
