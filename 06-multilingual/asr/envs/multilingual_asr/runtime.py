@@ -19,7 +19,12 @@ def local_server(corpus, sessions=16, reward_unit=None):
     # A manifest file selects the indexed corpus; a directory is a prepared snapshot.
     resolved = Path(corpus).resolve()
     key = "FLEURS_CORPUS_MANIFEST" if resolved.is_file() else "ASR_SNAPSHOT"
-    env = {**os.environ, key: str(resolved), "ASR_MAX_SESSIONS": str(sessions)}
+    env = {**os.environ, "ASR_MAX_SESSIONS": str(sessions)}
+    # The server prefers the manifest, so one inherited from the caller's shell would
+    # silently replace the snapshot asked for here.
+    env.pop("FLEURS_CORPUS_MANIFEST", None)
+    env.pop("ASR_SNAPSHOT", None)
+    env[key] = str(resolved)
     if reward_unit:
         env["ASR_REWARD_UNIT"] = reward_unit
     process = subprocess.Popen(

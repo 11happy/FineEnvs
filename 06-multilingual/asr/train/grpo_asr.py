@@ -410,6 +410,19 @@ def run(config):
             callbacks=[] if config.smoke else [CheckpointReady()],
         )
 
+        class CaptureAdapter(TrainerCallback):
+            def on_train_begin(self, args, state, control, model=None, **kwargs):
+                # Checkpoint weights are loaded before this hook. Compare with the
+                # resumed adapter, not the freshly initialized pre-load adapter.
+                self.before = {
+                    name: p.detach().cpu().clone()
+                    for name, p in model.named_parameters()
+                    if p.requires_grad
+                }
+
+        capture = CaptureAdapter()
+        trainer.add_callback(capture)
+
         baseline = evaluate(
             trainer, eval_rows, url, cache, config.max_completion_length
         )
@@ -417,14 +430,9 @@ def run(config):
             json.dumps(baseline, ensure_ascii=False, indent=2) + "\n"
         )
 
-        before = {
-            name: p.detach().cpu().clone()
-            for name, p in trainer.model.named_parameters()
-            if p.requires_grad
-        }
         result = trainer.train(resume_from_checkpoint=config.resume or None)
         changed = any(
-            not torch.equal(before[name], p.detach().cpu())
+            not torch.equal(capture.before[name], p.detach().cpu())
             for name, p in trainer.model.named_parameters()
             if p.requires_grad
         )

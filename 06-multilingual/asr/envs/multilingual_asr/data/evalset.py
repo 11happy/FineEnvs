@@ -363,7 +363,7 @@ def verify_audio(languages, selection, split, source_root=None, workers=VERIFY_W
         found = {}
         if source_root:
             paths = mounted_shards(source_root, language, split)
-            tables = (pq.ParquetFile(p).read(columns=["id", "audio"]) for p in paths)
+            tables = (pq.ParquetFile(p).read(columns=["id", "path", "audio"]) for p in paths)
         else:
             fs = http_filesystem()
 
@@ -371,7 +371,7 @@ def verify_audio(languages, selection, split, source_root=None, workers=VERIFY_W
                 for path in bucket_shards(language, split):
                     url = f"https://huggingface.co/buckets/FineEnvs/fleurs-bucket/resolve/{path}"
                     with fs.open(url) as handle:
-                        yield pq.ParquetFile(handle).read(columns=["id", "audio"])
+                        yield pq.ParquetFile(handle).read(columns=["id", "path", "audio"])
 
             tables = tables_from_bucket()
         from .schema import recording_id as _recording_id

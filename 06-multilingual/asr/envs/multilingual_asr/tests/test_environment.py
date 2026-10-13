@@ -229,3 +229,18 @@ def test_the_reward_unit_is_named_by_the_observation_it_grades(snapshot):
     assert a.grading_policy_id == "fleurs-asr-error-rate-v1"
     assert b.grading_policy_id == "fleurs-asr-cer-v1"
     assert a.metrics == b.metrics and b.reward > a.reward
+
+
+def test_rebuilding_a_snapshot_in_place_keeps_every_asset_registered(tmp_path):
+    import sqlite3
+    from contextlib import closing
+
+    make_fixture(tmp_path / "snap")
+    make_fixture(tmp_path / "snap")  # the audio files are already on disk the second time
+    with closing(sqlite3.connect(tmp_path / "snap" / "catalog.sqlite")) as db:
+        missing = db.execute(
+            "SELECT COUNT(*) FROM tasks WHERE json_extract(payload, '$.asset_sha256') "
+            "NOT IN (SELECT sha FROM assets)"
+        ).fetchone()[0]
+        assets = db.execute("SELECT COUNT(*) FROM assets").fetchone()[0]
+    assert assets > 0 and missing == 0

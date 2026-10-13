@@ -278,3 +278,17 @@ def test_two_sets_cannot_share_an_eval_split_name(corpus_index):
             catalog.cache_dir,
             evalsets=[record, other],
         )
+
+
+def test_verify_audio_finds_recordings_by_path(corpus_source):
+    from multilingual_asr.data.evalset import verify_audio
+    from multilingual_asr.data.schema import recording_id
+
+    selection = [
+        {"language": "en_us", "recording": recording_id(f"/cache/en_us-test-{index}.wav")}
+        for index in range(3)
+    ] + [{"language": "en_us", "recording": recording_id("/cache/en_us-test-99.wav")}]
+    failures = verify_audio(["en_us"], selection, "test", source_root=str(corpus_source), workers=1)
+
+    assert [f["recording"] for f in failures] == [selection[-1]["recording"]]
+    assert all(len(entry["audio_sha256"]) == 64 for entry in selection[:3])

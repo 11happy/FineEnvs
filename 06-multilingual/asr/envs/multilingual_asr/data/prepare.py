@@ -68,10 +68,12 @@ def write_snapshot(
                         if not path.exists():
                             path.write_bytes(media)
                             media_bytes += len(media)
-                            db.execute(
-                                "INSERT OR REPLACE INTO assets VALUES(?,?,?)",
-                                (sha, task["mime"], len(media)),
-                            )
+                        # Registered even when the bytes are already on disk: a rebuild
+                        # into the same directory has just emptied the assets table.
+                        db.execute(
+                            "INSERT OR REPLACE INTO assets VALUES(?,?,?)",
+                            (sha, task["mime"], len(media)),
+                        )
                         task["asset_sha256"] = sha
                         db.execute(
                             "INSERT OR REPLACE INTO tasks(id,split,payload) VALUES(?,?,?)",
