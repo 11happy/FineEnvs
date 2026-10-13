@@ -141,6 +141,19 @@ walks through the experiments, and the
 [collection](https://huggingface.co/collections/FineEnvs/smoldataenvs-multi-harness-rl-6abdfaaa8d74dacd481d5212)
 holds the Spaces, datasets and trained models.
 
+### [06 · Multilingual](./06-multilingual/) &nbsp;<sub>reading and hearing many languages, two servers</sub>
+
+**Two corpora as environments.** [`ocr/`](./06-multilingual/ocr/) serves a million scanned pages in
+22 languages from a bucket as 11 million tasks, with Sarvam Indic OCR Bench beside them as evaluation
+splits. [`asr/`](./06-multilingual/asr/) serves all of FLEURS, 102 languages of read speech. Both play
+in the browser.
+
+Gemma 4 E4B was trained on Kannada in each. Reading, it makes 16% fewer character errors on the
+benchmark's Kannada slice, mostly by learning to stay in the script. Hearing, it makes 45% fewer on
+clips it never saw, but only once the trainer actually fed it the audio: TRL drops audio from the
+forward pass its loss comes from, and the project shows the fix and the numbers. Part of the
+[Multilingual Multimodal Envs](https://huggingface.co/collections/FineEnvs/multilingual-multimodal-envs-6ac0c27c137f93e0799603e4) collection.
+
 ### [07 · Simulation environments](./07-simulation-environments/) &nbsp;<sub>a catalog of simulation environments and their evals</sub>
 
 **Real-world work as an environment.** Each environment rebuilds one real job from the records it leaves
@@ -180,19 +193,6 @@ Apps for exploring and evaluating RL environments, in [`tooling/`](./tooling/):
   rollouts on MiMo's own harness, and `mimo_harbor`, their conversion to Harbor datasets.
 
 ---
-
-### [06 · Multilingual](./06-multilingual/) &nbsp;<sub>reading and hearing many languages, two servers</sub>
-
-**Two corpora as environments.** [`ocr/`](./06-multilingual/ocr/) serves a million scanned pages in
-22 languages from a bucket as 11 million tasks, with Sarvam Indic OCR Bench beside them as evaluation
-splits. [`asr/`](./06-multilingual/asr/) serves all of FLEURS, 102 languages of read speech. Both play
-in the browser.
-
-Gemma 4 E4B was trained on Kannada in each. Reading, it makes 16% fewer character errors on the
-benchmark's Kannada slice, mostly by learning to stay in the script. Hearing, it makes 45% fewer on
-clips it never saw, but only once the trainer actually fed it the audio: TRL drops audio from the
-forward pass its loss comes from, and the project shows the fix and the numbers. Part of the
-[Multilingual Multimodal Envs](https://huggingface.co/collections/FineEnvs/multilingual-multimodal-envs-6ac0c27c137f93e0799603e4) collection.
 
 ## Articles &amp; talks
 
@@ -376,6 +376,7 @@ FineEnvs/
 ├── 03-geoguesser/           a multi-turn game as an environment
 ├── 04-smoldataenvs/         5.5K+ verified data-analysis tasks
 ├── 05-multi-harness-rl/     the same tasks trained through TRL, OpenCode and Harbor
+├── 06-multilingual/         OCR over 22 languages and ASR over 102, two OpenEnv servers
 ├── 07-simulation-environments/  a catalog of simulation environments: PortSimEnv v1–v5 and more
 ├── content/
 │   ├── articles/            long-form sources (Astro → Docker Space)
