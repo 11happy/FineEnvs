@@ -95,6 +95,13 @@ These came from serving a million pages before any training run.
   one worker; the hosted Space manages 0.77. A cold block reads in about 4.4 seconds from a mount
   and about 31 over HTTP.
 
+## An open question: how much of this needs RL?
+
+Most of what training changed is the model staying in the Kannada script: crops with letters from
+another script fall from 12.3% to 4.7%. A supervised fine-tune on the same 4,000 crops would show
+how much of that, and of the rest, plain SFT gets on its own, and whether GRPO adds anything beyond
+it. That run has not been done.
+
 ## Known limits
 
 - Rendered PNGs are identical pixel for pixel across deployments but not byte for byte: the

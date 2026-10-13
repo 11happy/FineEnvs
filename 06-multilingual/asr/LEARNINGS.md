@@ -139,3 +139,10 @@ These came from the first smoke runs, before any training result.
 - **Language ID wants the FLEURS locale, not the language.** Both models answered `ar_sa` for
   `ar_eg` and `es_es` for `es_419`. They recognised the language and missed the locale. That is the
   task being hard, not the reward misfiring.
+
+## 8. An open question: how much of this needs RL?
+
+Most of what training changed is the model staying in Kannada: transcripts that switch script fall
+from 20.8% to 1.6%. A supervised fine-tune on the same 2,282 clips would show how much of that, and
+of the rest, plain SFT gets on its own, and whether GRPO adds anything beyond it. That run has not
+been done.

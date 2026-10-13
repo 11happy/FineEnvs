@@ -112,7 +112,7 @@ source splits serve. Within a split the two sets nest: the overlap set's tasks a
 all-language set for its 21 languages. The overlap is 21 rather than 22 because FLEURS has
 no Sanskrit. Selection reads metadata columns only — 0.3 MB against 309.6 MB per shard — so
 both sets build in about 70 seconds; decoding every selected utterance is available through
-`--verify`. See [REPRODUCE.md](REPRODUCE.md#5b-frozen-evaluation-sets).
+`--verify`. See [REPRODUCE.md](REPRODUCE.md#6-frozen-evaluation-sets).
 
 ## Limits
 
@@ -121,5 +121,12 @@ counted per language in the corpus manifest. Audio is served as stored, at FLEUR
 no resampling, denoising, or VAD is applied. The trained result covers one language: FLEURS
 is read speech, mostly Wikipedia sentences, so the Kannada numbers say little about
 conversational or noisy speech. The other 101 languages have smoke runs, not trained results.
+
+Only Kannada has a held-out set big enough to measure training on: `eval_1` is the whole `kn_in`
+test split, 838 clips. `eval_21` holds about 17 transcription clips per language and `eval_102`
+holds 6, which is enough to compare base models but not to measure what training changed. Training
+another language starts with its own frozen set, built the way the Kannada one was:
+`asr-evalset build --languages <code> --families transcription --size <clips in the split>`, once
+for the test split and once for validation.
 Source audio and transcripts remain **CC BY 4.0** with Google attribution; see
 [data/README.md](data/README.md).
