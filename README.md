@@ -50,8 +50,8 @@ results and README, plus the Hub repos it owns. They read in order but stand alo
 | **03** | **[GeoGuesser](./03-geoguesser/)** | Drop a VLM at a random street corner on Earth and score it on kilometres of error. | 1 | 1 | 1 | ✅ stable |
 | **04** | **[SmolDataEnvs](./04-smoldataenvs/)** | Data-analysis tasks, verified SFT traces and a single-turn GRPO tutorial on HF Jobs. | 1 | 1 | 0 | 🚧 wip |
 | **05** | **[SmolDataEnvs: multi-harness RL](./05-multi-harness-rl/)** | Train on SmolDataEnvs with SETA, native OpenCode or Harbor, using HF Jobs or Slurm. | 3 | 1 | 0 | 🚧 wip |
-| **07** | **[PortSimEnv](./07-simulation-environments/portsim-v1/)** | Re-plan a broken week of container-ship dockings at the Port of Barcelona, graded against a proven optimum. | 1 | 2 | 1 | 🚧 wip |
-| **07** | **[PortSimEnv v2–v5: live, marine, wind and lines](./07-simulation-environments/portsim-live/)** | Run a Port of Barcelona quay through a week as it unfolds, with live news, pilots and tugs, real wind and shipping lines that answer back. | 1 | 1 | 0 | 🚧 wip |
+| **07** | **[PortSimEnv v1](./07-simulation-environments/portsim-v1/)**<br><sub>by [Adithya S Kolavi](https://github.com/adithya-s-k) (Hugging Face)</sub><br><sub>`agentenv` port by [Edgar Arakelyan](https://github.com/earakely-scale) (Scale AI)</sub> | Re-plan a broken week of container-ship dockings at the Port of Barcelona, graded against a proven optimum. | 1 | 2 | 1 | 🚧 wip |
+| **07** | **[PortSimEnv v2–v5: live, marine, wind and lines](./07-simulation-environments/portsim-live/)**<br><sub>by [Edgar Arakelyan](https://github.com/earakely-scale) (Scale AI)</sub> | Run a Port of Barcelona quay through a week as it unfolds, with live news, pilots and tugs, real wind and shipping lines that answer back. | 1 | 1 | 0 | 🚧 wip |
 <!-- END:projects -->
 
 <sub>Generated from each project's `project.yaml` by `tools/build_index.py`. Adding a project means
@@ -140,30 +140,29 @@ walks through the experiments, and the
 [collection](https://huggingface.co/collections/FineEnvs/smoldataenvs-multi-harness-rl-6abdfaaa8d74dacd481d5212)
 holds the Spaces, datasets and trained models.
 
-### [07 · Simulation environments](./07-simulation-environments/portsim-v1/) &nbsp;<sub>part 1: PortSimEnv v1</sub>
+### [07 · Simulation environments](./07-simulation-environments/) &nbsp;<sub>a catalog of simulation environments and their evals</sub>
 
-**Real-world work as an environment.** The agent re-plans a broken week of container-ship dockings at
-the Port of Barcelona, built from the port's real 2024 records: late ships, closed quay sections, crane
-breakdowns, gales. It has three tools, and its plan is graded once, deterministically, against the
-optimum CP-SAT proves.
+**Real-world work as an environment.** Each environment rebuilds one real job from the records it leaves
+behind and grades the agent once, deterministically, against an answer that can be proven best. The
+[catalog](./07-simulation-environments/) credits every author and gives each environment an eval card in
+the same format.
 
-Six models were evaluated on the 50 eval tasks. GPT-6.1 Sol leads at 0.888, and the open models lose
-most of their score by never submitting a plan. Play an episode in the
-[Space](https://huggingface.co/spaces/FineEnvs/PortSimEnv), watch every eval rollout
-[in 3D](https://huggingface.co/spaces/FineEnvs/PortSimEnv-Eval), and read
-[the article](https://huggingface.co/spaces/FineEnvs/simulation-rl-environments). The same env also runs
-on [AgentEnv](./07-simulation-environments/portsim-v1/envs/berth_planning/agentenv/).
+- **[PortSimEnv v1](./07-simulation-environments/portsim-v1/).** The agent re-plans a broken week of
+  container-ship dockings at the Port of Barcelona, built from the port's real 2024 records. It has
+  three tools, and its plan is graded against the optimum CP-SAT proves. GPT-6.1 Sol leads the six-model
+  eval at 0.888. Play it in the [Space](https://huggingface.co/spaces/FineEnvs/PortSimEnv), watch every
+  eval rollout [in 3D](https://huggingface.co/spaces/FineEnvs/PortSimEnv-Eval), or run it on
+  [AgentEnv](./07-simulation-environments/portsim-v1/envs/berth_planning/agentenv/).
+- **[PortSimEnv v2–v5](./07-simulation-environments/portsim-live/)**, by Edgar Arakelyan (Scale AI), on
+  [AgentEnv](https://github.com/scaleapi/agentenv-framework). The same weeks play out watch by watch: live
+  news and freezes (v2), pilots and tugs (v3), real wind and forecasts (v4), and shipping lines that
+  answer back (v5). Over 60 weeks Claude Opus 5.5 and GPT-6 Astra lead at 0.857 and 0.851, and
+  Qwen3.8-27B finds a valid plan in 1 of 60. Every run replays in the
+  [Space](https://huggingface.co/spaces/earakely-scale/PortSimEnv-AgentEnv).
 
-**[PortSimEnv live](./07-simulation-environments/portsim-live/)** plays the same weeks as they unfold,
-on [AgentEnv](https://github.com/scaleapi/agentenv-framework)'s virtual clock: the news arrives watch
-by watch through gateway triggers, windows about to start freeze, and the week is graded on what the
-agent confirmed. Four envs, v2 to v5, add to each other: live, then pilots and tugs shared with the
-port's other 2024 traffic, then real wind with the ECMWF forecasts as they were issued, then the
-shipping lines, each ship's agent an A2A agent the planner can ask for ETAs and arrival times. Twelve
-models played all 45 weeks of the first three; GPT-6 Astra and Claude Opus 5.5 lead at 0.945 and 0.944,
-and Qwen3.8-27B never finds a valid plan. Every run replays in the [Space](https://huggingface.co/spaces/earakely-scale/PortSimEnv-AgentEnv),
-and the [collection](https://huggingface.co/collections/earakely-scale/portsimenv-on-agentenv) gathers it with
-the dataset.
+Everything is in the [Simulation RL Envs collection](https://huggingface.co/collections/FineEnvs/simulation-rl-envs-6ac4eca150bd4b91790e2540),
+and [the article](https://huggingface.co/spaces/FineEnvs/simulation-rl-environments) covers all of it.
+Built a simulation environment? [Add it to the catalog](./07-simulation-environments/#add-your-environment).
 
 > **More coming.** Each new project is another end-to-end recipe: an environment, a training run, and
 > the artifacts on the Hub. [Proposals and contributions welcome →](./CONTRIBUTING.md)
@@ -283,9 +282,9 @@ tools, native OpenCode and Harbor, and evaluated in each.
 ![Article](https://img.shields.io/badge/-article-4F46E5) ![Live](https://img.shields.io/badge/-live%20space-FFD21E)
 
 Turning real-world work into RL environments. Part 1 builds PortSimEnv from the Port of Barcelona's
-2024 records and grades every plan against a proven optimum.
+2024 records; the community has since added v2–v5 and RailSimEnv.
 
-<sub>📂 [`content/articles/simulation-rl-environments/`](./content/articles/simulation-rl-environments/) · project [`07-simulation-environments/`](./07-simulation-environments/portsim-v1/)</sub>
+<sub>📂 [`content/articles/simulation-rl-environments/`](./content/articles/simulation-rl-environments/) · project [`07-simulation-environments/`](./07-simulation-environments/)</sub>
 
 </td>
 <td width="25%" valign="top">
@@ -363,7 +362,7 @@ FineEnvs/
 ├── 03-geoguesser/           a multi-turn game as an environment
 ├── 04-smoldataenvs/         5.5K+ verified data-analysis tasks
 ├── 05-multi-harness-rl/     the same tasks trained through TRL, OpenCode and Harbor
-├── 07-simulation-environments/  real-world simulations: part 1, PortSimEnv, and PortSimEnv live on AgentEnv
+├── 07-simulation-environments/  a catalog of simulation environments: PortSimEnv v1–v5 and more
 ├── content/
 │   ├── articles/            long-form sources (Astro → Docker Space)
 │   └── slides/              talk decks (Vite → static Space)
