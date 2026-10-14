@@ -83,3 +83,20 @@ def test_real_apps_are_computer_use_only(pack, surface):
     with pytest.raises(ValueError, match="real app"):
         DesignCanvasEnvironment(pack).reset(split=pack.splits()[0], index=0, surface=surface, skin="draw")
     assert len(STORE.recent(10**6)) == before  # rejected before any episode (or app) was set up
+
+
+def test_libreoffice_automatic_text_colour_reads_as_drawn():
+    """Text left on LibreOffice's Automatic colour (CharColor -1) is drawn black on a light page and white on a
+    dark one: the read-back says that colour, not black regardless, so a model that leaves the colour on Automatic
+    over a dark page is not marked wrong for it. The boundary is the page's relative luminance at ~0.345 (measured
+    on LibreOffice 25.2.3 in Impress and Draw; the 8-bit luminance does not predict it: pure green draws black)."""
+    from designgym.realapps.desktop import agent
+
+    auto = lambda bg: agent._hexcolor(-1, agent._auto_color(bg))  # noqa: E731
+    assert auto("#ffffff") == "#000000" and auto("#000000") == "#ffffff"
+    assert auto("#9e9e9e") == "#ffffff" and auto("#9f9f9f") == "#000000"  # the measured boundary, greys
+    assert auto("#00b800") == "#ffffff" and auto("#00bc00") == "#000000"  # ... and greens
+    assert auto("#ff0000") == "#ffffff" and auto("#00ff00") == "#000000" and auto("#ff00ff") == "#ffffff"
+    assert auto("#443e40") == "#ffffff"  # a dark brown page (train-01868): white, as seen on screen
+    assert agent._hexcolor(0xFF0000, agent._auto_color("#000000")) == "#ff0000"  # an explicit colour is itself
+    assert abs(agent._luminance("#ffffff") - 1.0) < 1e-9 and agent._luminance("#000000") == 0.0
