@@ -822,7 +822,7 @@ class Impress:
                 if not text.strip():
                     skipped += 1
                     continue
-                els.append({"kind": "text", **_read_text(s), **common})
+                els.append({"kind": "text", **_read_text(s, bg), **common})
             elif kind in ("com.sun.star.drawing.RectangleShape", "com.sun.star.drawing.EllipseShape"):
                 fill = f"#{int(s.FillColor) & 0xFFFFFF:06x}"
                 els.append({"kind": "shape", "shape": "ellipse" if "Ellipse" in kind else "rect", "fill": fill,
@@ -874,17 +874,54 @@ class Draw(Impress):
 
     LAUNCH, FACTORY, FILTER, EXT, TITLE = "--draw", "private:factory/sdraw", "draw8", "odg", "Draw"
 
-def _hexcolor(v) -> str:
-    return f"#{int(v) & 0xFFFFFF:06x}" if int(v) >= 0 else "#000000"
+def _luminance(color: str) -> float:
+    """Relative luminance of an sRGB colour (WCAG: channels linearised, 0.2126 R + 0.7152 G + 0.0722 B), 0..1."""
+    v = int(color.lstrip("#")[:6], 16)
+
+    def lin(c: int) -> float:
+        c /= 255
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * lin(v >> 16 & 0xFF) + 0.7152 * lin(v >> 8 & 0xFF) + 0.0722 * lin(v & 0xFF)
 
 
-def _style_of(r) -> dict:
-    return {"color": _hexcolor(r.CharColor), "bold": float(r.CharWeight) >= 150,
+AUTO_DARK = 0.345  # (measured on LibreOffice 25.2.3: #9e9e9e / #00b800, 0.343, draw white; #9f9f9f / #00bc00, 0.347, black)
+
+
+def _auto_color(background: str) -> str:
+    """The colour LibreOffice draws text set to Automatic (CharColor -1) with over `background`: white on a dark
+    one, black otherwise. Measured on LibreOffice 25.2.3 (Impress and Draw, 40 page colours): the boundary is the
+    background's relative luminance (sRGB linearised) at about 0.345, not its 8-bit luminance (pure green, 150 of
+    255, draws black; grey 158 draws white). Only the page's, or the text shape's own, fill colour counts: a
+    picture under the text does not."""
+    return "#ffffff" if _luminance(background) < AUTO_DARK else "#000000"
+
+
+def _hexcolor(v, auto: str = "#000000") -> str:
+    """A UNO colour as hex; a negative value is Automatic, read as the colour it is drawn with (`auto`)."""
+    return f"#{int(v) & 0xFFFFFF:06x}" if int(v) >= 0 else auto
+
+
+def _style_of(r, auto: str = "#000000") -> dict:
+    return {"color": _hexcolor(r.CharColor, auto), "bold": float(r.CharWeight) >= 150,
             "italic": _ev(r.CharPosture) not in (0, "NONE")}
 
 
-def _read_text(shape) -> dict:
-    """A text shape's string, typography and styled runs (one run per portion that differs in colour/weight)."""
+def _text_background(shape, page_background: str) -> str:
+    """What is behind a text shape's letters for the Automatic colour: the shape's own solid fill (LibreOffice
+    draws the text over it; not measured here, the env's text boxes have none), else the page."""
+    try:
+        if _ev(shape.FillStyle) in (1, "SOLID") and int(shape.FillColor) >= 0:
+            return f"#{int(shape.FillColor) & 0xFFFFFF:06x}"
+    except Exception:  # noqa: BLE001
+        pass
+    return page_background
+
+
+def _read_text(shape, page_background: str = "#ffffff") -> dict:
+    """A text shape's string, typography and styled runs (one run per portion that differs in colour/weight).
+    Text left on the Automatic colour reads as the colour LibreOffice draws it with over `page_background`."""
+    auto = _auto_color(_text_background(shape, page_background))
     paras = shape.Text.createEnumeration()
     runs, first_para = [], None
     while paras.hasMoreElements():
@@ -898,7 +935,7 @@ def _read_text(shape) -> dict:
             por = portions.nextElement()
             t = por.getString()
             if t:
-                runs.append({"text": t, **_style_of(por)})
+                runs.append({"text": t, **_style_of(por, auto)})
     text = "".join(r["text"] for r in runs)
     cur = shape.Text.createTextCursor()
     cur.gotoStart(False)
@@ -914,7 +951,7 @@ def _read_text(shape) -> dict:
     adjust = {0: "left", 1: "right", 3: "center", "LEFT": "left", "RIGHT": "right", "CENTER": "center"}.get(
         _ev(getattr(first_para, "ParaAdjust", 0)), "left")
     styles = {(r["color"], r["bold"], r["italic"]) for r in runs if r["text"].strip()}
-    return {"text": text, "font_family": cur.CharFontName, "font_size": font_px, **(_style_of(cur)),
+    return {"text": text, "font_family": cur.CharFontName, "font_size": font_px, **(_style_of(cur, auto)),
             "underline": int(_ev(cur.CharUnderline) or 0) != 0, "align": adjust, "line_height": lh,
             "letter_spacing": float(getattr(cur, "CharKerning", 0) or 0) / MM100_PER_PX,
             "uppercase": _ev(getattr(cur, "CharCaseMap", 0)) in (1, "UPPERCASE"),
